@@ -1,0 +1,114 @@
+.modal {
+    position: absolute;
+    margin-top: 32px;
+    padding: 32px 16px 32px 16px;
+    width: 350px;
+    max-height: 677px;
+    overflow: scroll;
+    overflow-x: hidden;
+    right: 72px;
+    background-color: white;
+    z-index: 999;
+    cursor: auto;
+}
+
+.heading {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 32px;
+    gap: 5px;
+}
+
+.heading p {
+    font-weight: bold;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-bottom: 32px;
+
+}
+
+a {
+    text-decoration: none;
+    color: var(--black);
+
+}
+
+
+
+#view,
+#check {
+    width: 135px;
+    height: 43px;
+    text-transform: uppercase;
+    font-weight: 600;
+
+
+}
+
+button:hover {
+    cursor: pointer;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+button:active {
+    transform: scale(0.99);
+}
+
+#view {
+    background-color: white;
+    border: 1px solid var(--black);
+    color: var(--black)
+}
+
+#check {
+    background-color: var(--green);
+    color: white;
+    border: 1px solid var(--green);
+
+}
+
+.sum {
+    font-weight: 600;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 32px;
+}
+
+.modal::-webkit-scrollbar {
+    width: 5px;
+}
+
+.modal::-webkit-scrollbar-track {
+    background-color: rgb(235, 232, 232);
+}
+
+.modal::-webkit-scrollbar-thumb {
+    background-color: rgb(195, 192, 192);
+
+}
+
+.cart.items.quantity {
+    color: white;
+    background-color: var(--black);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    font-size: 10px;
+    line-height: 16px;
+    position: relative;
+    left: -5px;
+    bottom: 9px;
+
+
+}
+
+.minicart.icon {
+    display: flex;
+    align-items: center;
+}
