@@ -57,25 +57,32 @@ class App extends React.Component {
         document
             .addEventListener('click', this.handleClickOutside);
 
-        const jsonselectedCur = localStorage.getItem('selectedCur')
-        const selectedCur = JSON.parse(jsonselectedCur)
-        this.setState(() => ({ selectedCur }))
+        if (localStorage.getItem('selectedCur')) {
+            const jsonselectedCur = localStorage.getItem('selectedCur')
+            const selectedCur = JSON.parse(jsonselectedCur)
+            this.setState(() => ({ selectedCur }))
+        }
 
-        const jsonselectedCurIndex = localStorage.getItem('selectedCurIndex')
-        const selectedCurIndex = JSON.parse(jsonselectedCurIndex)
-        this.setState(() => ({ selectedCurIndex }))
-
-        const jsonopenDropDown = localStorage.getItem('openDropDown')
-        const openDropDown = JSON.parse(jsonopenDropDown)
-        this.setState(() => ({ openDropDown }))
-
-        const jsonshownCart = localStorage.getItem('shownCart')
-        const shownCart = JSON.parse(jsonshownCart)
-        this.setState(() => ({ shownCart }))
-
-        const jsoncartItems = localStorage.getItem('cartItems')
-        const cartItems = JSON.parse(jsoncartItems)
-        this.setState(() => ({ cartItems }))
+        if (localStorage.getItem('selectedCurIndex')) {
+            const jsonselectedCurIndex = localStorage.getItem('selectedCurIndex')
+            const selectedCurIndex = JSON.parse(jsonselectedCurIndex)
+            this.setState(() => ({ selectedCurIndex }))
+        }
+        if (localStorage.getItem('selectedCurIndex')) {
+            const jsonopenDropDown = localStorage.getItem('openDropDown')
+            const openDropDown = JSON.parse(jsonopenDropDown)
+            this.setState(() => ({ openDropDown }))
+        }
+        if (localStorage.getItem('selectedCurIndex')) {
+            const jsonshownCart = localStorage.getItem('shownCart')
+            const shownCart = JSON.parse(jsonshownCart)
+            this.setState(() => ({ shownCart }))
+        }
+        if (localStorage.getItem('selectedCurIndex')) {
+            const jsoncartItems = localStorage.getItem('cartItems')
+            const cartItems = JSON.parse(jsoncartItems)
+            this.setState(() => ({ cartItems }))
+        }
 
 
     }
