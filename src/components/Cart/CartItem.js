@@ -2,34 +2,34 @@ import React from "react";
 import './CartItem.css'
 
 class CartItem extends React.Component {
-
     render() {
-
+        const { classname, attributes, item, quantity, cart, currency, currIndex,
+            displayedImage, displayedImages } = this.props;
         return (
-            <div className={`${this.props.class} wrapper`}>
-                <div className={`${this.props.class} specifications`}>
-                    <p id={`${this.props.class}-brand`}>{this.props.item.brand}</p>
-                    <p id={`${this.props.class}-name`}>{this.props.item.name}</p>
-                    <div className={`${this.props.class} price`}>
-                        <span className="symbol">{this.props.currency}</span>
-                        <span className="amount">{this.props.item.prices[this.props.currIndex].amount}</span>
+            <div className={`${classname} wrapper`}>
+                <div className={`${classname} specifications`}>
+                    <p id={`${classname}-brand`}>{item.brand}</p>
+                    <p id={`${classname}-name`}>{item.name}</p>
+                    <div className={`${classname} price`}>
+                        <span className="symbol">{currency}</span>
+                        <span className="amount">{item.prices[currIndex].amount.toFixed(2)}</span>
                     </div>
-                    <div className={`${this.props.class} attributes`}>
-                        {this.props.item.attributes.map((attr) => (
-                            <div className={`${this.props.class} attribute`} key={attr.id}>
-                                <p id={`${this.props.class}-attribute`}>{attr.name}:</p>
-                                <div className={`${this.props.class} attribute list`}>
+                    <div className={`${classname} attributes`}>
+                        {item.attributes.map((attr) => (
+                            <div className={`${classname} attribute`} key={attr.id}>
+                                <p id={`${classname}-attribute`}>{attr.name}:</p>
+                                <div className={`${classname} attribute list`}>
                                     {attr.items.map((element) => (
                                         <div key={element.id}>
                                             {attr.type === "swatch" &&
                                                 <button type="button" className={attr.items.indexOf(element) ===
-                                                    this.props.attributes.filter(a => a.attribute === this.props.item.attributes.indexOf(attr))[0].selectedAttribute
-                                                    ? `${this.props.class} swatch selected` : `${this.props.class} swatch`} style={{ backgroundColor: element.value }} key={element.id}>
+                                                    attributes.filter(a => a.attribute === item.attributes.indexOf(attr))[0].selectedAttribute
+                                                    ? `${classname} swatch selected` : `${classname} swatch`} style={{ backgroundColor: element.value }} key={element.id}>
                                                 </button>}
                                             {attr.type !== "swatch" &&
                                                 <button type="button" className={attr.items.indexOf(element) ===
-                                                    this.props.attributes.filter(a => a.attribute === this.props.item.attributes.indexOf(attr))[0].selectedAttribute
-                                                    ? `${this.props.class} list item selected` : `${this.props.class} list item`} key={element.id}>
+                                                    attributes.filter(a => a.attribute === item.attributes.indexOf(attr))[0].selectedAttribute
+                                                    ? `${classname} list item selected` : `${classname} list item`} key={element.id}>
                                                     {element.value}
                                                 </button>}
                                         </div>
@@ -41,54 +41,51 @@ class CartItem extends React.Component {
 
                     </div>
                 </div>
-                <div className={`${this.props.class} quantity`}>
-
-                    <button type="button" onClick={() => {
-                        let ID = ""
-                        this.props.attributes.forEach((a) => {
-                            ID += a.selectedAttribute
-                        })
-                        const prod = this.props.cart.find(prod =>
-                            prod.ID === this.props.item.id + ID
-                        )
-                        prod.quantity = prod.quantity + 1
-                    }
-                    }>+</button>
-                    <p>{this.props.quantity}</p>
-                    <button type="button" onClick={() => {
-                        let ID = ""
-                        this.props.attributes.forEach((a) => {
-                            ID += a.selectedAttribute
-                        })
-                        const prod = this.props.cart.find(prod =>
-                            prod.ID === this.props.item.id + ID
-                        )
-                        prod.quantity = prod.quantity - 1;
-                        if (prod.quantity === 0) {
-                            this.props.cart.splice(this.props.cart.indexOf(prod), 1);
-
+                <div className={`${classname} quantity-images`}>
+                    <div className={`${classname} quantity`}>
+                        <button type="button" onClick={() => {
+                            let ID = ""
+                            attributes.forEach((a) => {
+                                ID += a.selectedAttribute
+                            })
+                            const prod = cart.find(prod =>
+                                prod.ID === item.id + ID
+                            )
+                            prod.quantity = prod.quantity + 1
                         }
-                        if (this.props.cart.length === 0) {
-                            if (this.props.onClick) {
-                                this.props.onClick()
+                        }>+</button>
+                        <p>{quantity}</p>
+                        <button type="button" onClick={() => {
+                            let ID = ""
+                            attributes.forEach((a) => {
+                                ID += a.selectedAttribute
+                            })
+                            const prod = cart.find(prod =>
+                                prod.ID === item.id + ID
+                            )
+                            prod.quantity = prod.quantity - 1;
+                            if (prod.quantity === 0) {
+                                if (displayedImages) {
+                                    displayedImages.splice(cart.indexOf(prod), 1);
+                                }
+                                cart.splice(cart.indexOf(prod), 1);
+
                             }
                         }
-
+                        }>-</button>
+                    </div>
+                    {displayedImage > 0 &&
+                        <div>
+                            <img id={`${classname}-image`} src={item.gallery[displayedImage]} alt="product" />
+                        </div>
                     }
-                    }>-</button>
+                    {!displayedImage &&
+                        <div>
+                            <img id={`${classname}-image`} src={item.gallery[0]} alt="product" />
+                        </div>
+                    }
+
                 </div>
-                {this.props.displayedImage > 0 &&
-                    <div>
-                        <img id={`${this.props.class}-image`} src={this.props.item.gallery[this.props.displayedImage]} alt="product" />
-                    </div>
-                }
-                {!this.props.displayedImage &&
-                    <div>
-                        <img id={`${this.props.class}-image`} src={this.props.item.gallery[0]} alt="product" />
-                    </div>
-                }
-
-
             </div >
         )
     }

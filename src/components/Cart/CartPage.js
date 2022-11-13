@@ -17,13 +17,15 @@ class CartPage extends React.Component {
 
 
 
-    handleClickOnLeft = (productIndex, selectedImage) => {
+    handleClickOnLeft = (productIndex, selectedImage, galleryLength) => {
         if (!selectedImage) {
             selectedImage = 0
         }
         const newArr = [...this.state.displayedImage]
         if (selectedImage > 0) {
             newArr[productIndex] = selectedImage - 1
+        } else {
+            newArr[productIndex] = galleryLength - 1
         }
         this.setState({ displayedImage: newArr })
     }
@@ -35,37 +37,40 @@ class CartPage extends React.Component {
         const newArr = [...this.state.displayedImage]
         if (selectedImage < galleryLength - 1) {
             newArr[productIndex] = selectedImage + 1
+        } else {
+            newArr[productIndex] = 0
         }
         this.setState({ displayedImage: newArr })
     }
 
     render() {
-
+        const { darkenPage, cart, currency, currIndex } = this.props;
         return (
-            <div className={`cartpage container ${this.props.darkenPage}`}>
+            <div className={`cartpage container ${darkenPage}`}>
                 <div>
                     <div className="cart title">
                         <p>Cart</p>
                     </div>
-                    {this.props.cart.map((prod) => {
+                    {cart.map((prod) => {
                         return (
-                            <div key={prod.ID}>
+                            <div key={prod.ID} className="cartpage item">
                                 <CartItem
-                                    class="cartpage"
+                                    classname="cartpage"
                                     item={prod.product}
-                                    currency={this.props.currency}
-                                    currIndex={this.props.currIndex}
+                                    currency={currency}
+                                    currIndex={currIndex}
                                     attributes={prod.attributes}
                                     quantity={prod.quantity}
-                                    displayedImage={this.state.displayedImage[this.props.cart.indexOf(prod)]}
-                                    cart={this.props.cart}
+                                    displayedImage={this.state.displayedImage[cart.indexOf(prod)]}
+                                    displayedImages={this.state.displayedImage}
+                                    cart={cart}
                                 />
                                 {prod.product.gallery.length > 1 &&
                                     <div className="arrows">
-                                        <img src={leftarrow} className={this.state.displayedImage[this.props.cart.indexOf(prod)] ? "" : "noMore"}
-                                            alt="left arrow icon" onClick={() => { this.handleClickOnLeft(this.props.cart.indexOf(prod), this.state.displayedImage[this.props.cart.indexOf(prod)]) }} />
-                                        <img src={rightarrow} className={this.state.displayedImage[this.props.cart.indexOf(prod)] === prod.product.gallery.length - 1 ? "noMore" : ""}
-                                            alt="right arrow icon" onClick={() => { this.handleClickOnRight(this.props.cart.indexOf(prod), this.state.displayedImage[this.props.cart.indexOf(prod)], prod.product.gallery.length) }} />
+                                        <img src={leftarrow}
+                                            alt="left arrow icon" onClick={() => { this.handleClickOnLeft(cart.indexOf(prod), this.state.displayedImage[cart.indexOf(prod)], prod.product.gallery.length) }} />
+                                        <img src={rightarrow}
+                                            alt="right arrow icon" onClick={() => { this.handleClickOnRight(cart.indexOf(prod), this.state.displayedImage[cart.indexOf(prod)], prod.product.gallery.length) }} />
                                     </div>
                                 }
 
@@ -78,18 +83,18 @@ class CartPage extends React.Component {
                     <div className="tax">
                         <span>Tax 21%:</span>
                         <span className="data">
-                            <span>{this.props.currency}</span>
+                            <span>{currency}</span>
                             <span>
-                                {this.props.cart.reduce((prev, object) => {
-                                    return Math.round((prev + object.product.prices[this.props.currIndex].amount * object.quantity * 0.21) * 100) / 100
-                                }, 0)}
+                                {cart.reduce((prev, object) => {
+                                    return Math.round((prev + object.product.prices[currIndex].amount * object.quantity * 0.21) * 100) / 100
+                                }, 0).toFixed(2)}
                             </span>
                         </span>
                     </div>
                     <div className="quantity">
-                        <span>Quantity:</span>
+                        <span>Quantity: </span>
                         <span className="data">
-                            {this.props.cart.reduce((prev, object) => {
+                            {cart.reduce((prev, object) => {
                                 return prev + object.quantity
                             }, 0)}
                         </span>
@@ -97,16 +102,16 @@ class CartPage extends React.Component {
                     <div className="total">
                         <span>Total: </span>
                         <span className="data">
-                            <span>{this.props.currency}</span>
+                            <span>{currency}</span>
                             <span>
-                                {this.props.cart.reduce((prev, object) => {
-                                    return Math.round((prev + object.product.prices[this.props.currIndex].amount * object.quantity * 1.21) * 100) / 100
-                                }, 0)}
+                                {cart.reduce((prev, object) => {
+                                    return Math.round((prev + object.product.prices[currIndex].amount * object.quantity * 1.21) * 100) / 100
+                                }, 0).toFixed(2)}
                             </span>
                         </span>
                     </div>
 
-                    <button type="button" className="order button">Order</button>
+                    <button type="button" className="order button">order</button>
 
                 </div>
             </div>

@@ -86,7 +86,6 @@
     justify-content: center;
     gap: 2.5px;
     box-shadow: rgba(160, 160, 179, 0.2) 0px 7px 29px 0px;
-
     z-index: 1000;
     background-color: white;
 }
@@ -94,12 +93,15 @@
 
 .dropdown>.item {
     padding: 3px 3px 3px 21px;
+    
+}
+
+.dropdown>.item.notSelected:hover {
+    background-color: var(--grey);
     cursor: pointer;
 }
 
-.dropdown>.item:hover {
-    background-color: var(--grey)
-}
+
 
 .label {
     padding-left: 7px;

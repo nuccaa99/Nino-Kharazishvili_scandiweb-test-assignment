@@ -16,6 +16,11 @@
 
 }
 
+.cartoverlay.quantity-images {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
 
 .cartoverlay.price {
     padding-top: 4px;
@@ -61,11 +66,13 @@
 
 }
 
+
 .cartoverlay.quantity {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
+    padding-bottom: 4px;
 }
 
 .cartoverlay.quantity button {
@@ -94,7 +101,7 @@
     justify-content: space-between;
     gap: 5px;
     border-bottom: 1px solid var(--darkergrey);
-    ;
+    
 }
 
 #cartpage-image {
@@ -129,14 +136,23 @@
     padding-bottom: 7px;
 }
 
+.cartpage.quantity-images {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+}
+
 .cartpage.quantity {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 20px 0px;
+    padding-bottom: 4px;
+    
 }
 
 .cartpage.quantity>button {
+    border-radius: 0;
+    border: 1px solid var(--black);;
     width: 45px;
     height: 45px;
     font-size: large;
@@ -152,3 +168,4 @@
 .cartpage.swatch {
     pointer-events: none;
 }
+

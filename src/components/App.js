@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { gql } from '@apollo/client';
 import { Query } from '@apollo/client/react/components';
 
 import Products from "./Products/Products";
@@ -10,22 +9,13 @@ import MiniCart from "./Cart/MiniCart";
 import CartPage from "./Cart/CartPage";
 import Categories from "./Header/Categories";
 
+import { GET_CATEGORIES } from './Query';
+import { GET_CURRENCIES } from './Query';
+
 import './Header/Header.css';
 
 import Logo from './Header/icons/logo.jpg';
 
-
-const GET_DATA = gql`
-  query GetData {
-    categories {
-        name 
-        products {
-            id   
-            gallery  
-      }
-    }
-}
-`;
 
 
 class App extends React.Component {
@@ -33,13 +23,12 @@ class App extends React.Component {
     constructor() {
         super()
         this.state = {
-            selectedCur: "$",
+            selectedCur: "",
             selectedCurIndex: 0,
             openDropDown: false,
             shownCart: false,
             cartItems: []
         }
-
 
         this.handleClickOnCart = this.handleClickOnCart.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -146,40 +135,59 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>
-                <div className="container header">
-                    <div className="categories">
-                        <Categories />
-                    </div>
-                    <img id="green-logo" src={Logo} alt="green logo" />
-                    <div className="currencies cart">
-                        <CurrencyDropdown
-                            saveCurrency={this.saveCurrency}
-                            selectedCur={this.state.selectedCur}
-                            selectedCurIndex={this.state.selectedCurIndex}
-                            handleDropdownClick={this.handleDropdown}
-                            dropDown={this.state.openDropDown}
-                            reference={this.refCurrency} />
+            <Query query={GET_CATEGORIES}>
+                {({ loading, error, data }) => {
+                    if (loading) return <p>Loading...</p>;
+                    if (error) return <p>Error :(</p>;
+                    return (
+                        <div>
+                            <div className="container header">
+                                <div className="categories">
+                                    {data.categories.map((category) => {
+                                        return (
+                                            <Categories
+                                                category={category.name}
+                                                key={category.name}
+                                            />
+                                        )
+                                    })}
+                                </div>
+                                <img id="green-logo" src={Logo} alt="green logo" />
+                                <div className="currencies cart">
+                                    <Query query={GET_CURRENCIES}>
+                                        {({ loading, error, data }) => {
+                                            if (loading) return <p>Loading...</p>;
+                                            if (error) return <p>Error :(</p>;
+                                            return (
+                                                <CurrencyDropdown
+                                                    initCurrency={data.currencies[0].symbol}
+                                                    data={data}
+                                                    saveCurrency={this.saveCurrency}
+                                                    selectedCur={this.state.selectedCur}
+                                                    selectedCurIndex={this.state.selectedCurIndex}
+                                                    handleDropdownClick={this.handleDropdown}
+                                                    dropDown={this.state.openDropDown}
+                                                    reference={this.refCurrency} />
+                                            )
+                                        }}
+                                    </Query>
 
-                        <MiniCart
-                            shownCart={this.state.shownCart}
-                            onClick={this.handleClickOnCart}
-                            elements={this.state.cartItems}
-                            currency={this.state.selectedCur}
-                            currIndex={this.state.selectedCurIndex}
-                            reference={this.refCart}
-                            referenceTwo={this.refView}
-                        />
-                    </div>
-                </div>
-                <Query query={GET_DATA}>
-                    {({ loading, error, data }) => {
-                        if (loading) return <p>Loading...</p>;
-                        if (error) return <p>Error :(</p>;
-                        return (
+                                    <MiniCart
+                                        shownCart={this.state.shownCart}
+                                        onClick={this.handleClickOnCart}
+                                        elements={this.state.cartItems}
+                                        currency={this.state.selectedCur}
+                                        currIndex={this.state.selectedCurIndex}
+                                        reference={this.refCart}
+                                        referenceTwo={this.refView}
+                                    />
+                                </div>
+                            </div>
+
+
                             <Routes>
-                                <Route path="/" element={<Navigate to="/all" />} />
-                                {data.categories.map((category, index) => {
+                                <Route path="/" element={<Navigate to={`/${data.categories[0].name}`} />} />
+                                {data.categories.map((category) => {
                                     return (
                                         <React.Fragment key={category.name}>
                                             <Route path={`/${category.name}`}
@@ -187,11 +195,10 @@ class App extends React.Component {
                                                     cart={this.state.cartItems}
                                                     darkenPage={this.state.shownCart ? "darken" : ""}
                                                     category={category.name}
-                                                    page={index}
                                                     currency={this.state.selectedCur}
                                                     currIndex={this.state.selectedCurIndex} />}
                                             />
-                                            <Route path={`/${category.name}/cart`}
+                                            <Route path='/cart'
                                                 element={<CartPage
                                                     darkenPage={this.state.shownCart ? "darken" : ""}
                                                     cart={this.state.cartItems}
@@ -208,7 +215,6 @@ class App extends React.Component {
                                                             images={product.gallery}
                                                             currency={this.state.selectedCur}
                                                             currIndex={this.state.selectedCurIndex}
-                                                            onClick={this.handleClickOnAddCart}
                                                             reference={this.refAddButton} />} />
                                                 )
                                             })}
@@ -216,16 +222,16 @@ class App extends React.Component {
                                     )
                                 })}
                             </Routes>
+                        </div>
 
-                        );
-                    }
-                    }
-                </Query >
+                    );
+                }
+                }
+            </Query >
 
-
-            </div>
         )
     }
 }
+
 
 export default App;

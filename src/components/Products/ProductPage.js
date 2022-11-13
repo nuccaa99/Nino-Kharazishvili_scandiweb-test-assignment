@@ -1,7 +1,9 @@
 import React from "react";
-import { gql } from '@apollo/client';
+
 import { Query } from '@apollo/client/react/components';
-import './ProductPage.css'
+import './ProductPage.css';
+import { Interweave } from 'interweave';
+import { GET_PRODUCT } from '../Query';
 
 class ProductPage extends React.Component {
 
@@ -14,8 +16,6 @@ class ProductPage extends React.Component {
 
     }
 
-
-
     saveIndex(attribute, selected) {
         const newArr = [...this.state.attributes]
         newArr[attribute] = selected
@@ -24,54 +24,28 @@ class ProductPage extends React.Component {
     }
 
 
-
     render() {
-
-        const GET_PRODUCT = gql`
-        query GetProduct {
-        product(id: "${this.props.id}") {
-            id
-            brand
-            name 
-            description
-            gallery
-            inStock
-            prices {
-                currency {
-                  symbol
-                }
-                amount
-              }
-            gallery
-            attributes{id}
-            attributes{name}
-            attributes{type}
-            attributes{items{value}}
-            attributes{items{id}}
-            attributes{items{displayValue}}
-           
-      }
-}
-`;
-
+        const { cart, darkenPage, id, currency, currIndex, reference } = this.props;
         return (
-            <Query query={GET_PRODUCT}>
+            <Query query={GET_PRODUCT} variables={{ product: id }}>
                 {({ loading, error, data }) => {
                     if (loading) return <p>Loading...</p>;
                     if (error) return <p>Error :(</p>;
                     return (
-                        <div className={`page container ${this.props.darkenPage}`}>
+                        <div className={`page container ${darkenPage}`}>
                             <div className="options-wrapper">
                                 <div className="images">
                                     {data.product.gallery.map((source) => (
                                         <div className="image-wrapper" key={source}>
-                                            <img className="product option image" src={source} alt={data.product.name}
+                                            <img className="option image" src={source} alt={data.product.name}
                                                 onClick={() => { this.setState({ selectedImage: source }) }} />
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                            <div className="center">
+                            <div className={`center ${data.product.inStock ? "" : "outOfStock"}`}>
+                                {!data.product.inStock &&
+                                    <p id="outOfStockLabel">OUT OF STOCK</p>}
                                 <img className="option selected" src={this.state.selectedImage} alt={data.product.description} />
                             </div>
                             <div className="specifications">
@@ -85,11 +59,15 @@ class ProductPage extends React.Component {
                                                 <div key={item.id} onClick={() => { this.saveIndex(data.product.attributes.indexOf(attr), attr.items.indexOf(item)) }}>
                                                     {attr.type === "swatch" &&
                                                         <button
-                                                            type="button" className={attr.items.indexOf(item) === this.state.attributes[data.product.attributes.indexOf(attr)] ? "selected swatch" : "swatch"} style={{ backgroundColor: item.value }} key={item.id}>
+                                                            type="button"
+                                                            className={attr.items.indexOf(item) === this.state.attributes[data.product.attributes.indexOf(attr)] ? "selected swatch" : "swatch"}
+                                                            style={{ backgroundColor: item.value }}
+                                                            key={item.id}>
                                                         </button>}
                                                     {attr.type !== "swatch" &&
                                                         <button
-                                                            type="button" className={attr.items.indexOf(item) === this.state.attributes[data.product.attributes.indexOf(attr)] ? "selected list item" : "list item"} key={item.id}>
+                                                            type="button" className={attr.items.indexOf(item) === this.state.attributes[data.product.attributes.indexOf(attr)] ? "selected list item" : "list item"}
+                                                            key={item.id}>
                                                             {item.value}
                                                         </button>}
                                                 </div>
@@ -100,14 +78,13 @@ class ProductPage extends React.Component {
                                 ))}
                                 <p id="price">price:</p>
                                 <div id="price-tag">
-                                    <span>{this.props.currency}</span>
-                                    <span className="amount">{data.product.prices[this.props.currIndex].amount}</span>
+                                    <span>{currency}</span>
+                                    <span className="amount">{data.product.prices[currIndex].amount.toFixed(2)}</span>
 
                                 </div>
                                 {data.product.inStock &&
-                                    <button id="add-button" ref={this.props.reference} onClick={() => {
+                                    <button id="add-button" ref={reference} className={this.state.attributes.length === data.product.attributes.length ? "" : "disabled"} onClick={() => {
                                         if (data.product.inStock) {
-                                            this.props.onClick();
                                             const attributes = [];
                                             if (this.state.attributes.length === data.product.attributes.length) {
                                                 data.product.attributes.forEach((a) => {
@@ -123,26 +100,25 @@ class ProductPage extends React.Component {
                                             attributes.forEach((a) => {
                                                 ID += a.selectedAttribute
                                             })
-
-
-                                            const contains = this.props.cart.filter(item => item.ID === data.product.id + ID)
+                                            const contains = cart.filter(item => item.ID === data.product.id + ID)
                                             if (contains.length === 0) {
-                                                this.props.cart.push({ product: data.product, quantity: 1, attributes: attributes, ID: data.product.id + ID });
+                                                cart.push({ product: data.product, quantity: 1, attributes: attributes, ID: data.product.id + ID });
                                             } else {
-                                                const currentProduct = this.props.cart.find(prod =>
+                                                const currentProduct = cart.find(prod =>
                                                     prod.ID === data.product.id + ID
                                                 )
                                                 currentProduct.quantity = currentProduct.quantity + 1
                                             }
+
                                         }
                                     }}>
                                         ADD TO CART
                                     </button>}
                                 {!data.product.inStock &&
                                     <button id="out-button">OUT OF STOCK</button>}
-                                <div id="description"
-                                    dangerouslySetInnerHTML={{ __html: data.product.description }}
-                                />
+                                <div id="description">
+                                    <Interweave content={data.product.description} />
+                                </div>
                             </div>
                         </div>
                     )

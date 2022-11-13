@@ -25,13 +25,13 @@
     overflow-y: auto;
 }
 
-.product.option.image {
+.option.image {
     width: 176.65px;
     padding: 7px;
 
 }
 
-.product.option.image:hover {
+.option.image:hover {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     cursor: pointer;
 
@@ -136,7 +136,6 @@
     background-color: var(--black);
     color: white;
 
-
 }
 
 .list.item:hover {
@@ -149,6 +148,7 @@
     height: 32px;
     margin-right: 12px;
     border: 2px solid var(--grey);
+    
 }
 
 .swatch.selected {
@@ -161,8 +161,9 @@
 }
 
 .page.container.darken {
+    pointer-events: none;
     background-color: rgba(57, 55, 72, 0.22);
-    opacity: .7;
+    filter: brightness(88%);
 }
 
 .images::-webkit-scrollbar {
@@ -176,6 +177,30 @@
 .images::-webkit-scrollbar-thumb {
     background-color: rgb(195, 192, 192);
 
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: .5;
+}
+
+.center {
+    position: relative;
+}
+
+#outOfStockLabel {
+    position: absolute;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 160%;
+    position: absolute;
+    right: 150px;
+    top: 151px;
+    color: #8D8F9A;
+}
+
+.outOfStock>.option.selected {
+    opacity: .3;
 }
 
 
@@ -200,7 +225,7 @@
         max-width: 510px;
     }
 
-    .product.option.image {
+    .option.image {
         max-width: 100px;
         padding: 3px;
 
@@ -219,7 +244,7 @@
         max-width: 410px;
     }
 
-    .product.option.image {
+    .option.image {
         max-width: 80px;
         padding: 3px;
 
@@ -250,6 +275,9 @@
         align-items: center;
         justify-content: center;
     }
+
+
+
 
     #brand,
     #name,

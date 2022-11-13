@@ -8,43 +8,42 @@ import Cart from './icons/Empty_Cart.jpg';
 
 class MiniCart extends React.Component {
 
-
     render() {
-
+        const {shownCart, onClick, elements, currency, currIndex, reference, referenceTwo} = this.props;
         return (
-            <div ref={this.props.reference}>
+            <div ref={reference}>
                 <div className="minicart icon">
-                    <img src={Cart} alt="empty cart" onClick={this.props.onClick} />
-                    <div className={this.props.elements.length === 0 ? "invisible" : "cart items quantity"}>
-                        {this.props.elements.reduce((prev, object) => {
+                    <img src={Cart} alt="empty cart" onClick={onClick} />
+                    <div className={elements.length === 0 ? "invisible" : "cart items quantity"}>
+                        {elements.reduce((prev, object) => {
                             return prev + object.quantity
                         }, 0)}
                     </div>
                 </div>
 
-                {this.props.shownCart &&
+                {shownCart &&
                     <div className="modal">
                         <div className="heading">
                             <p>My Bag,</p>
                             <span>
-                                {this.props.elements.reduce((prev, object) => {
+                                {elements.reduce((prev, object) => {
                                     return prev + object.quantity
                                 }, 0)}
                             </span>
                         </div>
                         <div className="items">
-                            {this.props.elements.map((item) => {
+                            {elements.map((item) => {
                                 return (
                                     <CartItem
-                                        class="cartoverlay"
+                                        classname="cartoverlay"
                                         attributes={item.attributes}
                                         key={`${item.ID} ${item.quantity} ${item.product.name}`}
                                         item={item.product}
                                         quantity={item.quantity}
-                                        cart={this.props.elements}
-                                        currency={this.props.currency}
-                                        currIndex={this.props.currIndex}
-                                        onClick={this.props.onClick}
+                                        cart={elements}
+                                        currency={currency}
+                                        currIndex={currIndex}
+                                        onClick={onClick}
                                     />
                                 )
                             })}
@@ -52,11 +51,12 @@ class MiniCart extends React.Component {
                         <div className="sum">
                             <span>Total</span>
                             <div className="amount">
-                                <span>{this.props.currency}</span>
+                                <span>{currency}</span>
                                 <span>
-                                    {this.props.elements.reduce((prev, object) => {
-                                        return Math.round((prev + object.product.prices[this.props.currIndex].amount * object.quantity) * 100) / 100
-                                    }, 0)}
+                                    {elements.reduce((prev, object) => {
+                                        let sum = Math.round((prev + (object.product.prices[currIndex].amount * object.quantity)) * 100) / 100
+                                        return sum
+                                    }, 0).toFixed(2)}
                                 </span>
 
 
@@ -64,8 +64,8 @@ class MiniCart extends React.Component {
                         </div>
 
                         <div className="buttons">
-                            <Link to={`${window.location.pathname.substring(1, window.location.pathname.lastIndexOf('/') === window.location.pathname.indexOf('/') ? window.location.pathname.length : window.location.pathname.lastIndexOf('/'))}/cart`}>
-                                <button ref={this.props.referenceTwo} id="view">view bag</button>
+                            <Link to='/cart'>
+                                <button ref={referenceTwo} id="view">view bag</button>
                             </Link>
                             <button id="check">check out</button>
 
